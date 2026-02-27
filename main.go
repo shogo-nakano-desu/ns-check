@@ -34,7 +34,7 @@ func run(args []string) int {
 		fmt.Fprintf(os.Stderr, "Usage: namo [flags] <name>\n\n")
 		fmt.Fprintf(os.Stderr, "Flags:\n")
 		fs.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\nRegistries: domain, npm, github, dockerhub\n")
+		fmt.Fprintf(os.Stderr, "\nRegistries: domain, npm, github, github-repo, dockerhub, crates, homebrew\n")
 		fmt.Fprintf(os.Stderr, "\nExamples:\n")
 		fmt.Fprintf(os.Stderr, "  namo myproject\n")
 		fmt.Fprintf(os.Stderr, "  namo --only npm,github myproject\n")
@@ -83,11 +83,15 @@ func run(args []string) int {
 
 func buildCheckers() []checker.Checker {
 	client := &http.Client{}
+	ghToken := os.Getenv("GITHUB_TOKEN")
 	return []checker.Checker{
 		checker.NewDefaultDomainChecker(),
 		checker.NewNpmChecker(client, "https://registry.npmjs.org"),
-		checker.NewGitHubChecker(client, "https://api.github.com", os.Getenv("GITHUB_TOKEN")),
+		checker.NewCratesChecker(client, "https://crates.io"),
+		checker.NewGitHubChecker(client, "https://api.github.com", ghToken),
+		checker.NewGitHubRepoChecker(client, "https://api.github.com", ghToken),
 		checker.NewDockerHubChecker(client, "https://hub.docker.com"),
+		checker.NewHomebrewChecker(client, "https://formulae.brew.sh"),
 	}
 }
 

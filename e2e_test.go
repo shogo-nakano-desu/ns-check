@@ -106,26 +106,24 @@ func TestE2E_OnlyFilter(t *testing.T) {
 	if !strings.Contains(stdout, "npm") {
 		t.Errorf("expected 'npm' in output, got:\n%s", stdout)
 	}
-	if strings.Contains(stdout, "GitHub") {
-		t.Errorf("expected no GitHub in --only npm output, got:\n%s", stdout)
-	}
-	if strings.Contains(stdout, "Docker Hub") {
-		t.Errorf("expected no Docker Hub in --only npm output, got:\n%s", stdout)
-	}
-	if strings.Contains(stdout, "Domain") {
-		t.Errorf("expected no Domain in --only npm output, got:\n%s", stdout)
+	// Should NOT contain any other registries
+	for _, excluded := range []string{"GitHub", "Docker Hub", "Domain", "crates.io", "Homebrew"} {
+		if strings.Contains(stdout, excluded) {
+			t.Errorf("expected no %s in --only npm output, got:\n%s", excluded, stdout)
+		}
 	}
 }
 
 func TestE2E_SkipFilter(t *testing.T) {
 	stdout, _, _ := runNamo("--skip", "domain,dockerhub", "--no-color", "react")
 
-	if !strings.Contains(stdout, "npm") {
-		t.Errorf("expected 'npm' in output, got:\n%s", stdout)
+	// Should contain the non-skipped registries
+	for _, expected := range []string{"npm", "crates.io", "GitHub", "Homebrew"} {
+		if !strings.Contains(stdout, expected) {
+			t.Errorf("expected '%s' in output, got:\n%s", expected, stdout)
+		}
 	}
-	if !strings.Contains(stdout, "GitHub") {
-		t.Errorf("expected 'GitHub' in output, got:\n%s", stdout)
-	}
+	// Should NOT contain skipped registries
 	if strings.Contains(stdout, "Domain") {
 		t.Errorf("expected no Domain in --skip domain output, got:\n%s", stdout)
 	}
@@ -166,6 +164,65 @@ func TestE2E_OutputContainsAvailableCount(t *testing.T) {
 
 	if !strings.Contains(stdout, "of 1 available") {
 		t.Errorf("expected 'of 1 available' in output, got:\n%s", stdout)
+	}
+}
+
+func TestE2E_CratesChecker(t *testing.T) {
+	// "serde" is a well-known Rust crate
+	stdout, _, code := runNamo("--only", "crates", "--no-color", "serde")
+
+	if code != 1 {
+		t.Errorf("expected exit code 1 for taken crate, got %d", code)
+	}
+	if !strings.Contains(stdout, "crates.io") {
+		t.Errorf("expected 'crates.io' in output, got:\n%s", stdout)
+	}
+	if !strings.Contains(stdout, "taken") {
+		t.Errorf("expected 'taken' in output, got:\n%s", stdout)
+	}
+}
+
+func TestE2E_GitHubRepoChecker(t *testing.T) {
+	// "react" is a well-known GitHub repo
+	stdout, _, code := runNamo("--only", "github-repo", "--no-color", "react")
+
+	if code != 1 {
+		t.Errorf("expected exit code 1 for taken repo, got %d", code)
+	}
+	if !strings.Contains(stdout, "GitHub Repo") {
+		t.Errorf("expected 'GitHub Repo' in output, got:\n%s", stdout)
+	}
+	if !strings.Contains(stdout, "taken") {
+		t.Errorf("expected 'taken' in output, got:\n%s", stdout)
+	}
+}
+
+func TestE2E_HomebrewChecker(t *testing.T) {
+	// "wget" is a well-known Homebrew formula
+	stdout, _, code := runNamo("--only", "homebrew", "--no-color", "wget")
+
+	if code != 1 {
+		t.Errorf("expected exit code 1 for taken formula, got %d", code)
+	}
+	if !strings.Contains(stdout, "Homebrew") {
+		t.Errorf("expected 'Homebrew' in output, got:\n%s", stdout)
+	}
+	if !strings.Contains(stdout, "taken") {
+		t.Errorf("expected 'taken' in output, got:\n%s", stdout)
+	}
+}
+
+func TestE2E_AllRegistriesOutput(t *testing.T) {
+	stdout, _, _ := runNamo("--no-color", "react")
+
+	// All 7 registries should appear in output
+	for _, reg := range []string{"Domain (.com)", "npm", "crates.io", "GitHub", "GitHub Repo", "Docker Hub", "Homebrew"} {
+		if !strings.Contains(stdout, reg) {
+			t.Errorf("expected '%s' in output, got:\n%s", reg, stdout)
+		}
+	}
+	if !strings.Contains(stdout, "of 7 available") {
+		t.Errorf("expected 'of 7 available' in output, got:\n%s", stdout)
 	}
 }
 
