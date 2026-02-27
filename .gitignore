@@ -1,2 +1,4 @@
-nmchk
+/nmchk
 .claude/
+npm/nmchk-*/bin/
+dist/

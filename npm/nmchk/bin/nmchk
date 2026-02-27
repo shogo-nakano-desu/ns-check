@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+
+const { spawnSync } = require("child_process");
+const os = require("os");
+const path = require("path");
+
+const PLATFORMS = {
+  "darwin-arm64": "nmchk-darwin-arm64",
+  "darwin-x64": "nmchk-darwin-x64",
+  "linux-x64": "nmchk-linux-x64",
+  "linux-arm64": "nmchk-linux-arm64",
+  "win32-x64": "nmchk-win32-x64",
+};
+
+const platformKey = `${os.platform()}-${os.arch()}`;
+const pkg = PLATFORMS[platformKey];
+
+if (!pkg) {
+  console.error(
+    `nmchk: unsupported platform ${os.platform()}-${os.arch()}. Supported: ${Object.keys(PLATFORMS).join(", ")}`
+  );
+  process.exit(1);
+}
+
+const binName = os.platform() === "win32" ? "nmchk.exe" : "nmchk";
+
+let binPath;
+try {
+  binPath = path.join(
+    path.dirname(require.resolve(`${pkg}/package.json`)),
+    "bin",
+    binName
+  );
+} catch {
+  console.error(
+    `nmchk: could not find package ${pkg}. Make sure it is installed.`
+  );
+  process.exit(1);
+}
+
+const result = spawnSync(binPath, process.argv.slice(2), {
+  stdio: "inherit",
+});
+
+if (result.error) {
+  console.error(`nmchk: ${result.error.message}`);
+  process.exit(1);
+}
+
+process.exit(result.status ?? 1);

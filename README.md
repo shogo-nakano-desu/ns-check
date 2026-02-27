@@ -7,20 +7,31 @@ nmchk checks namespace availability across package registries, domain names, and
 ```
 $ nmchk aurora
 
-  ✗  domain          taken (76.76.21.21)
-  ✓  npm             available
-  ✗  github          taken (Organization)
-  ✗  github-repo     taken (nicehash/aurora)
-  ✗  dockerhub       taken
-  ✓  crates          available
-  ✗  homebrew        taken (formula)
+  Domain (.com)    ✗ taken
+                     76.76.21.21
+  Domain (.io)     ✗ taken
+                     198.185.159.144
+  Domain (.net)    ✗ taken
+                     65.22.228.94
+  Domain (.app)    ✓ available
+  Domain (.ai)     ✗ taken
+                     199.59.243.222
+  Domain (.sh)     ✓ available
+  Domain (.tech)   ✗ taken
+                     44.230.92.173
+  npm              ✓ available
+  GitHub           ✗ taken
+  GitHub Repo      ✗ taken
+  Docker Hub       ✗ taken
+  crates.io        ✓ available
+  Homebrew         ✗ taken
 
-  2 of 7 available
+  4 of 13 available
 ```
 
 ## Features
 
-- **7 registries** — domain (.com), npm, GitHub user/org, GitHub repo, Docker Hub, crates.io, Homebrew
+- **13 checks** — domain (7 TLDs: .com, .io, .net, .app, .ai, .sh, .tech), npm, GitHub user/org, GitHub repo, Docker Hub, crates.io, Homebrew
 - **Parallel checks** — all registries queried concurrently, results in seconds
 - **Zero dependencies** — single static binary, built with Go stdlib only
 - **Smart exit codes** — scriptable: `0` all available, `1` some taken, `2` error
@@ -28,6 +39,18 @@ $ nmchk aurora
 - **Color-aware** — respects `NO_COLOR`, auto-detects TTY, `--no-color` flag
 
 ## Install
+
+### npx (no install needed)
+
+```sh
+npx nmchk myproject
+```
+
+### npm (global)
+
+```sh
+npm install -g nmchk
+```
 
 ### From source
 
@@ -61,21 +84,24 @@ nmchk --timeout 5s myproject
 # Disable colors
 nmchk --no-color myproject
 
+# Print version
+nmchk --version
+
 # Use in scripts
 nmchk coolname && echo "It's all yours!"
 ```
 
 ### Registries
 
-| Name          | What it checks                          |
-|---------------|-----------------------------------------|
-| `domain`      | DNS lookup for `<name>.com`             |
-| `npm`         | npm registry                            |
-| `github`      | GitHub username / organization          |
-| `github-repo` | GitHub repository (exact name match)    |
-| `dockerhub`   | Docker Hub namespace                    |
-| `crates`      | Rust crates.io                          |
-| `homebrew`    | Homebrew formulae and casks             |
+| Name          | What it checks                                              |
+|---------------|-------------------------------------------------------------|
+| `domain`      | DNS lookup across 7 TLDs: .com, .io, .net, .app, .ai, .sh, .tech |
+| `npm`         | npm registry                                                |
+| `github`      | GitHub username / organization                              |
+| `github-repo` | GitHub repository (exact name match)                        |
+| `dockerhub`   | Docker Hub namespace                                        |
+| `crates`      | Rust crates.io                                              |
+| `homebrew`    | Homebrew formulae and casks                                 |
 
 ### Exit codes
 

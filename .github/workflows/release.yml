@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Run tests
+        run: go test ./...
+
+      - name: Build binaries for all platforms
+        run: bash scripts/build-npm.sh
+
+      - name: Update package versions
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          # Update all platform package versions
+          for dir in npm/nmchk-*/; do
+            jq --arg v "$VERSION" '.version = $v' "$dir/package.json" > tmp.json && mv tmp.json "$dir/package.json"
+          done
+          # Update main package version and optionalDependencies versions
+          jq --arg v "$VERSION" '
+            .version = $v |
+            .optionalDependencies |= with_entries(.value = $v)
+          ' npm/nmchk/package.json > tmp.json && mv tmp.json npm/nmchk/package.json
+
+      - name: Publish platform packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          for dir in npm/nmchk-*/; do
+            echo "Publishing $(basename "$dir")..."
+            npm publish "$dir" --access public
+          done
+
+      - name: Publish main package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish npm/nmchk --access public
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          # Collect binaries for the release
+          mkdir -p dist
+          cp npm/nmchk-darwin-arm64/bin/nmchk  "dist/nmchk-darwin-arm64"
+          cp npm/nmchk-darwin-x64/bin/nmchk    "dist/nmchk-darwin-x64"
+          cp npm/nmchk-linux-x64/bin/nmchk     "dist/nmchk-linux-x64"
+          cp npm/nmchk-linux-arm64/bin/nmchk   "dist/nmchk-linux-arm64"
+          cp npm/nmchk-win32-x64/bin/nmchk.exe "dist/nmchk-win32-x64.exe"
+          gh release create "v${VERSION}" dist/* \
+            --title "v${VERSION}" \
+            --generate-notes
