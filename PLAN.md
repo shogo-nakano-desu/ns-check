@@ -1,23 +1,23 @@
-# namo - NAMing OK? CLI Tool
+# nmchk - NaMe CHecK CLI Tool
 
 ## Context
 
-When building a new product, checking namespace availability across multiple registries (domain, npm, GitHub, Docker Hub) is tedious and repetitive. `namo` is a Go CLI tool that checks all of them in parallel with a single command.
+When building a new product, checking namespace availability across multiple registries (domain, npm, GitHub, Docker Hub) is tedious and repetitive. `nmchk` is a Go CLI tool that checks all of them in parallel with a single command.
 
 ## Usage
 
 ```
-namo myproject                       # check all registries
-namo --only npm,github myproject     # check specific registries
-namo --skip domain myproject         # skip specific registries
-namo --timeout 5s myproject          # custom timeout
-namo --no-color myproject            # disable colors
+nmchk myproject                       # check all registries
+nmchk --only npm,github myproject     # check specific registries
+nmchk --skip domain myproject         # skip specific registries
+nmchk --timeout 5s myproject          # custom timeout
+nmchk --no-color myproject            # disable colors
 ```
 
 ## Project Structure
 
 ```
-namo/
+nmchk/
 ├── go.mod
 ├── main.go                  # Entry point: flag parsing, orchestration, exit codes
 ├── checker/
@@ -75,7 +75,7 @@ type Checker interface {
 | Docker Hub | `GET` | `https://hub.docker.com/v2/users/<name>` | 404 | 200 |
 
 - GitHub: reads `GITHUB_TOKEN` env var for authenticated requests (5000 req/hr vs 60 unauthenticated)
-- All HTTP checkers: `User-Agent: namo/1.0` header
+- All HTTP checkers: `User-Agent: nmchk/1.0` header
 - Each checker struct accepts a base URL override for testability with `httptest.NewServer`
 
 ### Concurrency (`runner/runner.go`)
@@ -194,9 +194,9 @@ Each step writes the test(s) first, then implements the production code to make 
   - Some taken → exit 1
   - Error case → exit 2
 - **Test real network calls** (behind `//go:build e2e` build tag, opt-in):
-  - `namo react` → exit 1 (name widely taken)
-  - `namo --only npm xyzzy-namo-unlikely-name-12345` → exit 0 (likely available)
-  - `namo --timeout 1ms some-name` → exit 2 (timeout triggers errors)
+  - `nmchk react` → exit 1 (name widely taken)
+  - `nmchk --only npm xyzzy-nmchk-unlikely-name-12345` → exit 0 (likely available)
+  - `nmchk --timeout 1ms some-name` → exit 2 (timeout triggers errors)
 
 ## Testing Summary
 
@@ -218,12 +218,12 @@ Run including e2e: `go test -tags e2e ./...`
 
 ```bash
 go test ./...                          # all unit tests pass
-go build -o namo .                     # builds successfully
-./namo react                           # exit 1, most registries taken
-./namo xyzzy-namo-unlikely-12345       # exit 0, most registries available
-./namo --only npm,github myproject     # filtered registries
-./namo --skip domain myproject         # skip domain check
-./namo --version                       # prints version
-./namo                                 # exit 2, usage message
+go build -o nmchk .                     # builds successfully
+./nmchk react                           # exit 1, most registries taken
+./nmchk xyzzy-nmchk-unlikely-12345       # exit 0, most registries available
+./nmchk --only npm,github myproject     # filtered registries
+./nmchk --skip domain myproject         # skip domain check
+./nmchk --version                       # prints version
+./nmchk                                 # exit 2, usage message
 echo $?                                # verify exit codes
 ```

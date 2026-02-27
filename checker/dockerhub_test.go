@@ -10,7 +10,7 @@ import (
 func TestDockerHubChecker_Taken(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"id":"library","username":"library"}`))
+		_, _ = w.Write([]byte(`{"id":"library","username":"library"}`))
 	}))
 	defer srv.Close()
 
@@ -97,7 +97,7 @@ func TestDockerHubChecker_UserAgent(t *testing.T) {
 	c := NewDockerHubChecker(srv.Client(), srv.URL)
 	c.Check(context.Background(), "test")
 
-	if receivedUA != "namo/1.0" {
-		t.Errorf("expected User-Agent 'namo/1.0', got %q", receivedUA)
+	if receivedUA != "nmchk/1.0" {
+		t.Errorf("expected User-Agent 'nmchk/1.0', got %q", receivedUA)
 	}
 }

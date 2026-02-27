@@ -31,7 +31,7 @@ func (c *GitHubChecker) Check(ctx context.Context, name string) Result {
 		return Result{Registry: c.DisplayName(), Name: name, Status: Unknown, Err: err}
 	}
 	req.Header.Set("Accept", "application/vnd.github+json")
-	req.Header.Set("User-Agent", "namo/1.0")
+	req.Header.Set("User-Agent", "nmchk/1.0")
 	if c.token != "" {
 		req.Header.Set("Authorization", "Bearer "+c.token)
 	}
@@ -40,7 +40,7 @@ func (c *GitHubChecker) Check(ctx context.Context, name string) Result {
 	if err != nil {
 		return Result{Registry: c.DisplayName(), Name: name, Status: Unknown, Err: err}
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	switch resp.StatusCode {
 	case http.StatusOK:

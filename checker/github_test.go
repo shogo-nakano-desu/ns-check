@@ -11,7 +11,7 @@ func TestGitHubChecker_Taken(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"login":"octocat","type":"User"}`))
+		_, _ = w.Write([]byte(`{"login":"octocat","type":"User"}`))
 	}))
 	defer srv.Close()
 
@@ -30,7 +30,7 @@ func TestGitHubChecker_TakenOrg(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"login":"github","type":"Organization"}`))
+		_, _ = w.Write([]byte(`{"login":"github","type":"Organization"}`))
 	}))
 	defer srv.Close()
 
@@ -121,7 +121,7 @@ func TestGitHubChecker_UserAgent(t *testing.T) {
 	c := NewGitHubChecker(srv.Client(), srv.URL, "")
 	c.Check(context.Background(), "test")
 
-	if receivedUA != "namo/1.0" {
-		t.Errorf("expected User-Agent 'namo/1.0', got %q", receivedUA)
+	if receivedUA != "nmchk/1.0" {
+		t.Errorf("expected User-Agent 'nmchk/1.0', got %q", receivedUA)
 	}
 }

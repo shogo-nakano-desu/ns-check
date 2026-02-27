@@ -1,11 +1,11 @@
-# namo
+# nmchk
 
 **Is that name taken?** Find out everywhere at once.
 
-namo checks namespace availability across package registries, domain names, and platforms — all in a single command. Stop manually visiting seven different websites before naming your next project.
+nmchk checks namespace availability across package registries, domain names, and platforms — all in a single command. Stop manually visiting seven different websites before naming your next project.
 
 ```
-$ namo aurora
+$ nmchk aurora
 
   ✗  domain          taken (76.76.21.21)
   ✓  npm             available
@@ -32,37 +32,37 @@ $ namo aurora
 ### From source
 
 ```sh
-go install github.com/shogonakano/namo@latest
+go install github.com/shogonakano/nmchk@latest
 ```
 
 ### Build locally
 
 ```sh
-git clone https://github.com/shogonakano/namo.git
-cd namo
-go build -o namo .
+git clone https://github.com/shogonakano/nmchk.git
+cd nmchk
+go build -o nmchk .
 ```
 
 ## Usage
 
 ```sh
 # Check all registries
-namo myproject
+nmchk myproject
 
 # Check only npm and crates.io
-namo --only npm,crates myproject
+nmchk --only npm,crates myproject
 
 # Skip domain lookup
-namo --skip domain myproject
+nmchk --skip domain myproject
 
 # Custom timeout (default: 10s)
-namo --timeout 5s myproject
+nmchk --timeout 5s myproject
 
 # Disable colors
-namo --no-color myproject
+nmchk --no-color myproject
 
 # Use in scripts
-namo coolname && echo "It's all yours!"
+nmchk coolname && echo "It's all yours!"
 ```
 
 ### Registries

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/shogonakano/namo/checker"
+	"github.com/shogonakano/nmchk/checker"
 )
 
 func TestPrinter_Available(t *testing.T) {

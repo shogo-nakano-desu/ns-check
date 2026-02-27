@@ -11,7 +11,7 @@ func TestGitHubRepoChecker_Taken(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"total_count":1,"items":[{"name":"react","full_name":"facebook/react","stargazers_count":200000}]}`))
+		_, _ = w.Write([]byte(`{"total_count":1,"items":[{"name":"react","full_name":"facebook/react","stargazers_count":200000}]}`))
 	}))
 	defer srv.Close()
 
@@ -30,7 +30,7 @@ func TestGitHubRepoChecker_Available_NoResults(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"total_count":0,"items":[]}`))
+		_, _ = w.Write([]byte(`{"total_count":0,"items":[]}`))
 	}))
 	defer srv.Close()
 
@@ -47,7 +47,7 @@ func TestGitHubRepoChecker_Available_NoExactMatch(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"total_count":5,"items":[{"name":"react-native","full_name":"facebook/react-native","stargazers_count":100000}]}`))
+		_, _ = w.Write([]byte(`{"total_count":5,"items":[{"name":"react-native","full_name":"facebook/react-native","stargazers_count":100000}]}`))
 	}))
 	defer srv.Close()
 
@@ -80,7 +80,7 @@ func TestGitHubRepoChecker_TokenSent(t *testing.T) {
 		receivedAuth = r.Header.Get("Authorization")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"total_count":0,"items":[]}`))
+		_, _ = w.Write([]byte(`{"total_count":0,"items":[]}`))
 	}))
 	defer srv.Close()
 
@@ -98,7 +98,7 @@ func TestGitHubRepoChecker_QueryParam(t *testing.T) {
 		receivedQuery = r.URL.Query().Get("q")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"total_count":0,"items":[]}`))
+		_, _ = w.Write([]byte(`{"total_count":0,"items":[]}`))
 	}))
 	defer srv.Close()
 
@@ -124,7 +124,7 @@ func TestGitHubRepoChecker_CaseInsensitiveMatch(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"total_count":1,"items":[{"name":"React","full_name":"facebook/React","stargazers_count":200000}]}`))
+		_, _ = w.Write([]byte(`{"total_count":1,"items":[{"name":"React","full_name":"facebook/React","stargazers_count":200000}]}`))
 	}))
 	defer srv.Close()
 

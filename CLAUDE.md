@@ -1,14 +1,15 @@
 # CLAUDE.md
 
-namo is a Go CLI tool that checks namespace availability across package registries, domain names, and platforms in parallel.
+nmchk is a Go CLI tool that checks namespace availability across package registries, domain names, and platforms in parallel.
 
 ## Quick Reference
 
 - **Language:** Go 1.25+ (stdlib only, zero external dependencies)
-- **Build:** `go build -o namo .`
+- **Build:** `go build -o nmchk .`
 - **Test (unit):** `go test ./...`
 - **Test (e2e):** `go test -tags e2e ./...`
-- **Lint:** `go vet ./...`
+- **Lint:** `golangci-lint run ./...`
+- **Format:** `golangci-lint fmt ./...`
 
 ## Documents
 

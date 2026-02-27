@@ -63,13 +63,13 @@ func (c *HomebrewChecker) checkEndpoint(ctx context.Context, path string) (bool,
 	if err != nil {
 		return false, err
 	}
-	req.Header.Set("User-Agent", "namo/1.0")
+	req.Header.Set("User-Agent", "nmchk/1.0")
 
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return false, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	switch resp.StatusCode {
 	case http.StatusOK:

@@ -6,16 +6,16 @@ import (
 	"os"
 	"strings"
 
-	"github.com/shogonakano/namo/checker"
+	"github.com/shogonakano/nmchk/checker"
 )
 
 const (
-	reset = "\033[0m"
-	green = "\033[32m"
-	red   = "\033[31m"
+	reset  = "\033[0m"
+	green  = "\033[32m"
+	red    = "\033[31m"
 	yellow = "\033[33m"
-	bold  = "\033[1m"
-	dim   = "\033[2m"
+	bold   = "\033[1m"
+	dim    = "\033[2m"
 )
 
 // Printer formats and prints check results to a writer.
@@ -36,7 +36,7 @@ func NewPrinterWithWriter(w io.Writer, color bool) *Printer {
 
 // Print formats and outputs the check results.
 func (p *Printer) Print(name string, results []checker.Result) {
-	fmt.Fprintf(p.w, "\nChecking availability for %s\n\n", p.styled(bold, `"`+name+`"`))
+	_, _ = fmt.Fprintf(p.w, "\nChecking availability for %s\n\n", p.styled(bold, `"`+name+`"`))
 
 	maxLen := 0
 	for _, r := range results {
@@ -49,19 +49,19 @@ func (p *Printer) Print(name string, results []checker.Result) {
 		padding := strings.Repeat(" ", maxLen-len(r.Registry)+2)
 		switch r.Status {
 		case checker.Available:
-			fmt.Fprintf(p.w, "  %s%s%s\n", r.Registry, padding, p.styled(green, "✓ available"))
+			_, _ = fmt.Fprintf(p.w, "  %s%s%s\n", r.Registry, padding, p.styled(green, "✓ available"))
 		case checker.Taken:
-			fmt.Fprintf(p.w, "  %s%s%s\n", r.Registry, padding, p.styled(red, "✗ taken"))
+			_, _ = fmt.Fprintf(p.w, "  %s%s%s\n", r.Registry, padding, p.styled(red, "✗ taken"))
 		case checker.Unknown:
 			errMsg := "unknown error"
 			if r.Err != nil {
 				errMsg = r.Err.Error()
 			}
-			fmt.Fprintf(p.w, "  %s%s%s\n", r.Registry, padding, p.styled(yellow, "⚠ "+errMsg))
+			_, _ = fmt.Fprintf(p.w, "  %s%s%s\n", r.Registry, padding, p.styled(yellow, "⚠ "+errMsg))
 		}
 		if r.Detail != "" {
 			detailPad := strings.Repeat(" ", maxLen+4)
-			fmt.Fprintf(p.w, "%s%s\n", detailPad, p.styled(dim, r.Detail))
+			_, _ = fmt.Fprintf(p.w, "%s%s\n", detailPad, p.styled(dim, r.Detail))
 		}
 	}
 
@@ -71,7 +71,7 @@ func (p *Printer) Print(name string, results []checker.Result) {
 			avail++
 		}
 	}
-	fmt.Fprintf(p.w, "\n%d of %d available\n", avail, len(results))
+	_, _ = fmt.Fprintf(p.w, "\n%d of %d available\n", avail, len(results))
 }
 
 func (p *Printer) styled(code, text string) string {

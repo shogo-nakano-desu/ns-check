@@ -11,7 +11,7 @@ func TestHomebrewChecker_TakenFormula(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/api/formula/wget.json" {
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{"name":"wget"}`))
+			_, _ = w.Write([]byte(`{"name":"wget"}`))
 			return
 		}
 		w.WriteHeader(http.StatusNotFound)
@@ -33,7 +33,7 @@ func TestHomebrewChecker_TakenCask(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/api/cask/firefox.json" {
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{"token":"firefox"}`))
+			_, _ = w.Write([]byte(`{"token":"firefox"}`))
 			return
 		}
 		w.WriteHeader(http.StatusNotFound)
@@ -55,7 +55,7 @@ func TestHomebrewChecker_TakenBoth(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Both formula and cask exist
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{}`))
+		_, _ = w.Write([]byte(`{}`))
 	}))
 	defer srv.Close()
 

@@ -10,7 +10,7 @@ import (
 func TestCratesChecker_Taken(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"crate":{"name":"serde"}}`))
+		_, _ = w.Write([]byte(`{"crate":{"name":"serde"}}`))
 	}))
 	defer srv.Close()
 
@@ -83,8 +83,8 @@ func TestCratesChecker_UserAgent(t *testing.T) {
 	c := NewCratesChecker(srv.Client(), srv.URL)
 	c.Check(context.Background(), "test")
 
-	if receivedUA != "namo/1.0" {
-		t.Errorf("expected User-Agent 'namo/1.0', got %q", receivedUA)
+	if receivedUA != "nmchk/1.0" {
+		t.Errorf("expected User-Agent 'nmchk/1.0', got %q", receivedUA)
 	}
 }
 
