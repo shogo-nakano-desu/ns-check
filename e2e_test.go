@@ -215,14 +215,18 @@ func TestE2E_HomebrewChecker(t *testing.T) {
 func TestE2E_AllRegistriesOutput(t *testing.T) {
 	stdout, _, _ := runNamo("--no-color", "react")
 
-	// All 7 registries should appear in output
-	for _, reg := range []string{"Domain (.com)", "npm", "crates.io", "GitHub", "GitHub Repo", "Docker Hub", "Homebrew"} {
+	// All 13 registries should appear in output (7 domain TLDs + 6 others)
+	for _, reg := range []string{
+		"Domain (.com)", "Domain (.io)", "Domain (.net)", "Domain (.app)",
+		"Domain (.ai)", "Domain (.sh)", "Domain (.tech)",
+		"npm", "crates.io", "GitHub", "GitHub Repo", "Docker Hub", "Homebrew",
+	} {
 		if !strings.Contains(stdout, reg) {
 			t.Errorf("expected '%s' in output, got:\n%s", reg, stdout)
 		}
 	}
-	if !strings.Contains(stdout, "of 7 available") {
-		t.Errorf("expected 'of 7 available' in output, got:\n%s", stdout)
+	if !strings.Contains(stdout, "of 13 available") {
+		t.Errorf("expected 'of 13 available' in output, got:\n%s", stdout)
 	}
 }
 

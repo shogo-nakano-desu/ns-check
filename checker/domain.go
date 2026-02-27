@@ -11,25 +11,26 @@ type HostLookup interface {
 	LookupHost(ctx context.Context, host string) ([]string, error)
 }
 
-// DomainChecker checks .com domain availability via DNS lookup.
+// DomainChecker checks domain availability for a specific TLD via DNS lookup.
 type DomainChecker struct {
 	resolver HostLookup
+	tld      string
 }
 
-func NewDomainChecker(resolver HostLookup) *DomainChecker {
-	return &DomainChecker{resolver: resolver}
+func NewDomainChecker(resolver HostLookup, tld string) *DomainChecker {
+	return &DomainChecker{resolver: resolver, tld: tld}
 }
 
 // NewDefaultDomainChecker creates a DomainChecker with the default net.Resolver.
-func NewDefaultDomainChecker() *DomainChecker {
-	return &DomainChecker{resolver: &net.Resolver{}}
+func NewDefaultDomainChecker(tld string) *DomainChecker {
+	return &DomainChecker{resolver: &net.Resolver{}, tld: tld}
 }
 
 func (c *DomainChecker) Name() string        { return "domain" }
-func (c *DomainChecker) DisplayName() string { return "Domain (.com)" }
+func (c *DomainChecker) DisplayName() string { return "Domain (." + c.tld + ")" }
 
 func (c *DomainChecker) Check(ctx context.Context, name string) Result {
-	fqdn := name + ".com"
+	fqdn := name + "." + c.tld
 
 	addrs, err := c.resolver.LookupHost(ctx, fqdn)
 	if err != nil {

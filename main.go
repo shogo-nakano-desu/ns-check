@@ -34,7 +34,7 @@ func run(args []string) int {
 		fmt.Fprintf(os.Stderr, "Usage: namo [flags] <name>\n\n")
 		fmt.Fprintf(os.Stderr, "Flags:\n")
 		fs.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\nRegistries: domain, npm, github, github-repo, dockerhub, crates, homebrew\n")
+		fmt.Fprintf(os.Stderr, "\nRegistries: domain (.com/.io/.net/.app/.ai/.sh/.tech), npm, github, github-repo, dockerhub, crates, homebrew\n")
 		fmt.Fprintf(os.Stderr, "\nExamples:\n")
 		fmt.Fprintf(os.Stderr, "  namo myproject\n")
 		fmt.Fprintf(os.Stderr, "  namo --only npm,github myproject\n")
@@ -84,15 +84,22 @@ func run(args []string) int {
 func buildCheckers() []checker.Checker {
 	client := &http.Client{}
 	ghToken := os.Getenv("GITHUB_TOKEN")
-	return []checker.Checker{
-		checker.NewDefaultDomainChecker(),
+
+	domainTLDs := []string{"com", "io", "net", "app", "ai", "sh", "tech"}
+	checkers := make([]checker.Checker, 0, len(domainTLDs)+6)
+	for _, tld := range domainTLDs {
+		checkers = append(checkers, checker.NewDefaultDomainChecker(tld))
+	}
+
+	checkers = append(checkers,
 		checker.NewNpmChecker(client, "https://registry.npmjs.org"),
 		checker.NewCratesChecker(client, "https://crates.io"),
 		checker.NewGitHubChecker(client, "https://api.github.com", ghToken),
 		checker.NewGitHubRepoChecker(client, "https://api.github.com", ghToken),
 		checker.NewDockerHubChecker(client, "https://hub.docker.com"),
 		checker.NewHomebrewChecker(client, "https://formulae.brew.sh"),
-	}
+	)
+	return checkers
 }
 
 func filterCheckers(all []checker.Checker, only, skip string) []checker.Checker {

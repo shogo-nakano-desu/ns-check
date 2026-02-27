@@ -17,7 +17,7 @@ func (f *fakeResolver) LookupHost(_ context.Context, _ string) ([]string, error)
 }
 
 func TestDomainChecker_Taken(t *testing.T) {
-	c := NewDomainChecker(&fakeResolver{addrs: []string{"93.184.216.34"}})
+	c := NewDomainChecker(&fakeResolver{addrs: []string{"93.184.216.34"}}, "com")
 	result := c.Check(context.Background(), "example")
 
 	if result.Status != Taken {
@@ -32,7 +32,7 @@ func TestDomainChecker_Taken(t *testing.T) {
 }
 
 func TestDomainChecker_TakenMultipleAddrs(t *testing.T) {
-	c := NewDomainChecker(&fakeResolver{addrs: []string{"1.2.3.4", "5.6.7.8"}})
+	c := NewDomainChecker(&fakeResolver{addrs: []string{"1.2.3.4", "5.6.7.8"}}, "com")
 	result := c.Check(context.Background(), "example")
 
 	if result.Status != Taken {
@@ -49,7 +49,7 @@ func TestDomainChecker_Available(t *testing.T) {
 		Name:       "nonexistent.com",
 		IsNotFound: true,
 	}
-	c := NewDomainChecker(&fakeResolver{err: dnsErr})
+	c := NewDomainChecker(&fakeResolver{err: dnsErr}, "com")
 	result := c.Check(context.Background(), "nonexistent")
 
 	if result.Status != Available {
@@ -58,7 +58,7 @@ func TestDomainChecker_Available(t *testing.T) {
 }
 
 func TestDomainChecker_UnknownError(t *testing.T) {
-	c := NewDomainChecker(&fakeResolver{err: fmt.Errorf("network unreachable")})
+	c := NewDomainChecker(&fakeResolver{err: fmt.Errorf("network unreachable")}, "com")
 	result := c.Check(context.Background(), "test")
 
 	if result.Status != Unknown {
@@ -76,7 +76,7 @@ func TestDomainChecker_DNSErrorNotFound(t *testing.T) {
 		Name:       "test.com",
 		IsNotFound: false,
 	}
-	c := NewDomainChecker(&fakeResolver{err: dnsErr})
+	c := NewDomainChecker(&fakeResolver{err: dnsErr}, "com")
 	result := c.Check(context.Background(), "test")
 
 	if result.Status != Unknown {
@@ -84,15 +84,37 @@ func TestDomainChecker_DNSErrorNotFound(t *testing.T) {
 	}
 }
 
-func TestDomainChecker_AppendsDotCom(t *testing.T) {
-	var queriedHost string
+func TestDomainChecker_AppendsTLD(t *testing.T) {
 	resolver := &recordingResolver{inner: &fakeResolver{addrs: []string{"1.2.3.4"}}}
-	c := NewDomainChecker(resolver)
+	c := NewDomainChecker(resolver, "com")
 	c.Check(context.Background(), "myproject")
 
-	queriedHost = resolver.lastHost
-	if queriedHost != "myproject.com" {
-		t.Errorf("expected lookup for 'myproject.com', got %q", queriedHost)
+	if resolver.lastHost != "myproject.com" {
+		t.Errorf("expected lookup for 'myproject.com', got %q", resolver.lastHost)
+	}
+}
+
+func TestDomainChecker_DifferentTLDs(t *testing.T) {
+	tlds := []string{"com", "io", "net", "app", "ai", "sh", "tech"}
+	for _, tld := range tlds {
+		t.Run(tld, func(t *testing.T) {
+			resolver := &recordingResolver{inner: &fakeResolver{addrs: []string{"1.2.3.4"}}}
+			c := NewDomainChecker(resolver, tld)
+
+			if c.Name() != "domain" {
+				t.Errorf("expected Name() 'domain', got %q", c.Name())
+			}
+			expected := "Domain (." + tld + ")"
+			if c.DisplayName() != expected {
+				t.Errorf("expected DisplayName() %q, got %q", expected, c.DisplayName())
+			}
+
+			c.Check(context.Background(), "test")
+			expectedHost := "test." + tld
+			if resolver.lastHost != expectedHost {
+				t.Errorf("expected lookup for %q, got %q", expectedHost, resolver.lastHost)
+			}
+		})
 	}
 }
 
