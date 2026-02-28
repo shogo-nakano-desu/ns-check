@@ -1,0 +1,33 @@
+{
+  "name": "nsprobe",
+  "version": "0.1.0",
+  "description": "Check namespace availability across package registries, domain names, and platforms",
+  "bin": {
+    "nsprobe": "bin/nsprobe"
+  },
+  "optionalDependencies": {
+    "nsprobe-darwin-arm64": "0.1.0",
+    "nsprobe-darwin-x64": "0.1.0",
+    "nsprobe-linux-x64": "0.1.0",
+    "nsprobe-linux-arm64": "0.1.0",
+    "nsprobe-win32-x64": "0.1.0"
+  },
+  "keywords": [
+    "namespace",
+    "availability",
+    "checker",
+    "npm",
+    "domain",
+    "github",
+    "cli"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shogo-nakano-desu/nsprobe.git"
+  },
+  "homepage": "https://github.com/shogo-nakano-desu/nsprobe",
+  "bugs": {
+    "url": "https://github.com/shogo-nakano-desu/nsprobe/issues"
+  }
+}

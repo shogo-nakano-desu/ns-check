@@ -3,7 +3,7 @@ package runner
 import (
 	"context"
 
-	"github.com/shogonakano/ns-check/checker"
+	"github.com/shogo-nakano-desu/nsprobe/checker"
 )
 
 // Run executes all checkers concurrently and returns results in the same order as input.

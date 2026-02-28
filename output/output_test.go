@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/shogonakano/ns-check/checker"
+	"github.com/shogo-nakano-desu/nsprobe/checker"
 )
 
 func TestPrinter_Available(t *testing.T) {

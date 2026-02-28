@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/shogonakano/ns-check/checker"
+	"github.com/shogo-nakano-desu/nsprobe/checker"
 )
 
 const (

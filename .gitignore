@@ -1,4 +1,4 @@
-/ns-check
+/nsprobe
 .claude/
-npm/ns-check-*/bin/
+npm/nsprobe-*/bin/
 dist/

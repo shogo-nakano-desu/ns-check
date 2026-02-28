@@ -106,7 +106,7 @@ func TestNpmChecker_UserAgent(t *testing.T) {
 	c := NewNpmChecker(srv.Client(), srv.URL)
 	c.Check(context.Background(), "test")
 
-	if receivedUA != "ns-check/1.0" {
-		t.Errorf("expected User-Agent 'ns-check/1.0', got %q", receivedUA)
+	if receivedUA != "nsprobe/1.0" {
+		t.Errorf("expected User-Agent 'nsprobe/1.0', got %q", receivedUA)
 	}
 }

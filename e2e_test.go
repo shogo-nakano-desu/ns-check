@@ -11,13 +11,13 @@ import (
 var binaryPath string
 
 func TestMain(m *testing.M) {
-	dir, err := os.MkdirTemp("", "ns-check-e2e")
+	dir, err := os.MkdirTemp("", "nsprobe-e2e")
 	if err != nil {
 		panic(err)
 	}
 	defer func() { _ = os.RemoveAll(dir) }()
 
-	binaryPath = filepath.Join(dir, "ns-check")
+	binaryPath = filepath.Join(dir, "nsprobe")
 	cmd := exec.Command("go", "build", "-o", binaryPath, ".")
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
@@ -62,7 +62,7 @@ func TestE2E_Version(t *testing.T) {
 	if code != 0 {
 		t.Errorf("expected exit code 0, got %d", code)
 	}
-	if !strings.Contains(stdout, "ns-check v") {
+	if !strings.Contains(stdout, "nsprobe v") {
 		t.Errorf("expected version output, got:\n%s", stdout)
 	}
 }

@@ -38,20 +38,20 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
           # Update all platform package versions
-          for dir in npm/ns-check-*/; do
+          for dir in npm/nsprobe-*/; do
             jq --arg v "$VERSION" '.version = $v' "$dir/package.json" > tmp.json && mv tmp.json "$dir/package.json"
           done
           # Update main package version and optionalDependencies versions
           jq --arg v "$VERSION" '
             .version = $v |
             .optionalDependencies |= with_entries(.value = $v)
-          ' npm/ns-check/package.json > tmp.json && mv tmp.json npm/ns-check/package.json
+          ' npm/nsprobe/package.json > tmp.json && mv tmp.json npm/nsprobe/package.json
 
       - name: Publish platform packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          for dir in npm/ns-check-*/; do
+          for dir in npm/nsprobe-*/; do
             echo "Publishing $(basename "$dir")..."
             npm publish "$dir" --access public
           done
@@ -59,7 +59,7 @@ jobs:
       - name: Publish main package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish npm/ns-check --access public
+        run: npm publish npm/nsprobe --access public
 
       - name: Create GitHub Release
         env:
@@ -68,11 +68,11 @@ jobs:
           VERSION="${{ steps.version.outputs.VERSION }}"
           # Collect binaries for the release
           mkdir -p dist
-          cp npm/ns-check-darwin-arm64/bin/ns-check  "dist/ns-check-darwin-arm64"
-          cp npm/ns-check-darwin-x64/bin/ns-check    "dist/ns-check-darwin-x64"
-          cp npm/ns-check-linux-x64/bin/ns-check     "dist/ns-check-linux-x64"
-          cp npm/ns-check-linux-arm64/bin/ns-check   "dist/ns-check-linux-arm64"
-          cp npm/ns-check-win32-x64/bin/ns-check.exe "dist/ns-check-win32-x64.exe"
+          cp npm/nsprobe-darwin-arm64/bin/nsprobe  "dist/nsprobe-darwin-arm64"
+          cp npm/nsprobe-darwin-x64/bin/nsprobe    "dist/nsprobe-darwin-x64"
+          cp npm/nsprobe-linux-x64/bin/nsprobe     "dist/nsprobe-linux-x64"
+          cp npm/nsprobe-linux-arm64/bin/nsprobe   "dist/nsprobe-linux-arm64"
+          cp npm/nsprobe-win32-x64/bin/nsprobe.exe "dist/nsprobe-win32-x64.exe"
           gh release create "v${VERSION}" dist/* \
             --title "v${VERSION}" \
             --generate-notes

@@ -1,11 +1,11 @@
-# ns-check
+# nsprobe
 
 **Is that name taken?** Find out everywhere at once.
 
-ns-check checks namespace availability across package registries, domain names, and platforms — all in a single command. Stop manually visiting seven different websites before naming your next project.
+nsprobe checks namespace availability across package registries, domain names, and platforms — all in a single command. Stop manually visiting seven different websites before naming your next project.
 
 ```
-$ ns-check aurora
+$ nsprobe aurora
 
   Domain (.com)    ✗ taken
                      76.76.21.21
@@ -43,52 +43,52 @@ $ ns-check aurora
 ### npx (no install needed)
 
 ```sh
-npx ns-check myproject
+npx nsprobe myproject
 ```
 
 ### npm (global)
 
 ```sh
-npm install -g ns-check
+npm install -g nsprobe
 ```
 
 ### From source
 
 ```sh
-go install github.com/shogonakano/ns-check@latest
+go install github.com/shogo-nakano-desu/nsprobe@latest
 ```
 
 ### Build locally
 
 ```sh
-git clone https://github.com/shogonakano/ns-check.git
-cd ns-check
-go build -o ns-check .
+git clone https://github.com/shogo-nakano-desu/nsprobe.git
+cd nsprobe
+go build -o nsprobe .
 ```
 
 ## Usage
 
 ```sh
 # Check all registries
-ns-check myproject
+nsprobe myproject
 
 # Check only npm and crates.io
-ns-check --only npm,crates myproject
+nsprobe --only npm,crates myproject
 
 # Skip domain lookup
-ns-check --skip domain myproject
+nsprobe --skip domain myproject
 
 # Custom timeout (default: 10s)
-ns-check --timeout 5s myproject
+nsprobe --timeout 5s myproject
 
 # Disable colors
-ns-check --no-color myproject
+nsprobe --no-color myproject
 
 # Print version
-ns-check --version
+nsprobe --version
 
 # Use in scripts
-ns-check coolname && echo "It's all yours!"
+nsprobe coolname && echo "It's all yours!"
 ```
 
 ### Registries

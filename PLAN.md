@@ -1,23 +1,23 @@
-# ns-check - NaMe CHecK CLI Tool
+# nsprobe - NaMe CHecK CLI Tool
 
 ## Context
 
-When building a new product, checking namespace availability across multiple registries (domain, npm, GitHub, Docker Hub) is tedious and repetitive. `ns-check` is a Go CLI tool that checks all of them in parallel with a single command.
+When building a new product, checking namespace availability across multiple registries (domain, npm, GitHub, Docker Hub) is tedious and repetitive. `nsprobe` is a Go CLI tool that checks all of them in parallel with a single command.
 
 ## Usage
 
 ```
-ns-check myproject                       # check all registries
-ns-check --only npm,github myproject     # check specific registries
-ns-check --skip domain myproject         # skip specific registries
-ns-check --timeout 5s myproject          # custom timeout
-ns-check --no-color myproject            # disable colors
+nsprobe myproject                       # check all registries
+nsprobe --only npm,github myproject     # check specific registries
+nsprobe --skip domain myproject         # skip specific registries
+nsprobe --timeout 5s myproject          # custom timeout
+nsprobe --no-color myproject            # disable colors
 ```
 
 ## Project Structure
 
 ```
-ns-check/
+nsprobe/
 ├── go.mod
 ├── main.go                  # Entry point: flag parsing, orchestration, exit codes
 ├── checker/
@@ -75,7 +75,7 @@ type Checker interface {
 | Docker Hub | `GET` | `https://hub.docker.com/v2/users/<name>` | 404 | 200 |
 
 - GitHub: reads `GITHUB_TOKEN` env var for authenticated requests (5000 req/hr vs 60 unauthenticated)
-- All HTTP checkers: `User-Agent: ns-check/1.0` header
+- All HTTP checkers: `User-Agent: nsprobe/1.0` header
 - Each checker struct accepts a base URL override for testability with `httptest.NewServer`
 
 ### Concurrency (`runner/runner.go`)
@@ -194,9 +194,9 @@ Each step writes the test(s) first, then implements the production code to make 
   - Some taken → exit 1
   - Error case → exit 2
 - **Test real network calls** (behind `//go:build e2e` build tag, opt-in):
-  - `ns-check react` → exit 1 (name widely taken)
-  - `ns-check --only npm xyzzy-ns-check-unlikely-name-12345` → exit 0 (likely available)
-  - `ns-check --timeout 1ms some-name` → exit 2 (timeout triggers errors)
+  - `nsprobe react` → exit 1 (name widely taken)
+  - `nsprobe --only npm xyzzy-nsprobe-unlikely-name-12345` → exit 0 (likely available)
+  - `nsprobe --timeout 1ms some-name` → exit 2 (timeout triggers errors)
 
 ## Testing Summary
 
@@ -218,12 +218,12 @@ Run including e2e: `go test -tags e2e ./...`
 
 ```bash
 go test ./...                          # all unit tests pass
-go build -o ns-check .                     # builds successfully
-./ns-check react                           # exit 1, most registries taken
-./ns-check xyzzy-ns-check-unlikely-12345       # exit 0, most registries available
-./ns-check --only npm,github myproject     # filtered registries
-./ns-check --skip domain myproject         # skip domain check
-./ns-check --version                       # prints version
-./ns-check                                 # exit 2, usage message
+go build -o nsprobe .                     # builds successfully
+./nsprobe react                           # exit 1, most registries taken
+./nsprobe xyzzy-nsprobe-unlikely-12345       # exit 0, most registries available
+./nsprobe --only npm,github myproject     # filtered registries
+./nsprobe --skip domain myproject         # skip domain check
+./nsprobe --version                       # prints version
+./nsprobe                                 # exit 2, usage message
 echo $?                                # verify exit codes
 ```

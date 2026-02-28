@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/shogonakano/ns-check/checker"
-	"github.com/shogonakano/ns-check/output"
-	"github.com/shogonakano/ns-check/runner"
+	"github.com/shogo-nakano-desu/nsprobe/checker"
+	"github.com/shogo-nakano-desu/nsprobe/output"
+	"github.com/shogo-nakano-desu/nsprobe/runner"
 )
 
 var version = "0.1.0"
@@ -21,7 +21,7 @@ func main() {
 }
 
 func run(args []string) int {
-	fs := flag.NewFlagSet("ns-check", flag.ContinueOnError)
+	fs := flag.NewFlagSet("nsprobe", flag.ContinueOnError)
 
 	only := fs.String("only", "", "comma-separated list of registries to check (e.g. npm,github)")
 	skip := fs.String("skip", "", "comma-separated list of registries to skip (e.g. domain)")
@@ -30,15 +30,15 @@ func run(args []string) int {
 	showVersion := fs.Bool("version", false, "print version and exit")
 
 	fs.Usage = func() {
-		fmt.Fprintf(os.Stderr, "ns-check - NaMe CHecK. Check namespace availability.\n\n")
-		fmt.Fprintf(os.Stderr, "Usage: ns-check [flags] <name>\n\n")
+		fmt.Fprintf(os.Stderr, "nsprobe - NaMe CHecK. Check namespace availability.\n\n")
+		fmt.Fprintf(os.Stderr, "Usage: nsprobe [flags] <name>\n\n")
 		fmt.Fprintf(os.Stderr, "Flags:\n")
 		fs.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nRegistries: domain (.com/.io/.net/.app/.ai/.sh/.tech), npm, github, github-repo, dockerhub, crates, homebrew\n")
 		fmt.Fprintf(os.Stderr, "\nExamples:\n")
-		fmt.Fprintf(os.Stderr, "  ns-check myproject\n")
-		fmt.Fprintf(os.Stderr, "  ns-check --only npm,github myproject\n")
-		fmt.Fprintf(os.Stderr, "  ns-check --skip domain myproject\n")
+		fmt.Fprintf(os.Stderr, "  nsprobe myproject\n")
+		fmt.Fprintf(os.Stderr, "  nsprobe --only npm,github myproject\n")
+		fmt.Fprintf(os.Stderr, "  nsprobe --skip domain myproject\n")
 	}
 
 	if err := fs.Parse(args); err != nil {
@@ -46,7 +46,7 @@ func run(args []string) int {
 	}
 
 	if *showVersion {
-		fmt.Printf("ns-check v%s\n", version)
+		fmt.Printf("nsprobe v%s\n", version)
 		return 0
 	}
 

@@ -4,11 +4,11 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 platforms=(
-  "darwin  arm64 ns-check-darwin-arm64 ns-check"
-  "darwin  amd64 ns-check-darwin-x64   ns-check"
-  "linux   amd64 ns-check-linux-x64    ns-check"
-  "linux   arm64 ns-check-linux-arm64  ns-check"
-  "windows amd64 ns-check-win32-x64    ns-check.exe"
+  "darwin  arm64 nsprobe-darwin-arm64 nsprobe"
+  "darwin  amd64 nsprobe-darwin-x64   nsprobe"
+  "linux   amd64 nsprobe-linux-x64    nsprobe"
+  "linux   arm64 nsprobe-linux-arm64  nsprobe"
+  "windows amd64 nsprobe-win32-x64    nsprobe.exe"
 )
 
 for entry in "${platforms[@]}"; do
