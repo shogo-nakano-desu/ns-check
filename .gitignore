@@ -1,4 +1,4 @@
-/nmchk
+/ns-check
 .claude/
-npm/nmchk-*/bin/
+npm/ns-check-*/bin/
 dist/
