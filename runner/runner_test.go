@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/shogonakano/nmchk/checker"
+	"github.com/shogonakano/ns-check/checker"
 )
 
 type mockChecker struct {

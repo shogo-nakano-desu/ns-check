@@ -1,11 +1,11 @@
-# nmchk
+# ns-check
 
 **Is that name taken?** Find out everywhere at once.
 
-nmchk checks namespace availability across package registries, domain names, and platforms — all in a single command. Stop manually visiting seven different websites before naming your next project.
+ns-check checks namespace availability across package registries, domain names, and platforms — all in a single command. Stop manually visiting seven different websites before naming your next project.
 
 ```
-$ nmchk aurora
+$ ns-check aurora
 
   Domain (.com)    ✗ taken
                      76.76.21.21
@@ -43,52 +43,52 @@ $ nmchk aurora
 ### npx (no install needed)
 
 ```sh
-npx nmchk myproject
+npx ns-check myproject
 ```
 
 ### npm (global)
 
 ```sh
-npm install -g nmchk
+npm install -g ns-check
 ```
 
 ### From source
 
 ```sh
-go install github.com/shogonakano/nmchk@latest
+go install github.com/shogonakano/ns-check@latest
 ```
 
 ### Build locally
 
 ```sh
-git clone https://github.com/shogonakano/nmchk.git
-cd nmchk
-go build -o nmchk .
+git clone https://github.com/shogonakano/ns-check.git
+cd ns-check
+go build -o ns-check .
 ```
 
 ## Usage
 
 ```sh
 # Check all registries
-nmchk myproject
+ns-check myproject
 
 # Check only npm and crates.io
-nmchk --only npm,crates myproject
+ns-check --only npm,crates myproject
 
 # Skip domain lookup
-nmchk --skip domain myproject
+ns-check --skip domain myproject
 
 # Custom timeout (default: 10s)
-nmchk --timeout 5s myproject
+ns-check --timeout 5s myproject
 
 # Disable colors
-nmchk --no-color myproject
+ns-check --no-color myproject
 
 # Print version
-nmchk --version
+ns-check --version
 
 # Use in scripts
-nmchk coolname && echo "It's all yours!"
+ns-check coolname && echo "It's all yours!"
 ```
 
 ### Registries

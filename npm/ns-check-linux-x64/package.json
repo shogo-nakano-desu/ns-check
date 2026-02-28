@@ -1,0 +1,12 @@
+{
+  "name": "ns-check-linux-x64",
+  "version": "0.1.0",
+  "description": "ns-check binary for Linux x64",
+  "os": ["linux"],
+  "cpu": ["x64"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shogonakano/ns-check.git"
+  }
+}

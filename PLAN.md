@@ -1,23 +1,23 @@
-# nmchk - NaMe CHecK CLI Tool
+# ns-check - NaMe CHecK CLI Tool
 
 ## Context
 
-When building a new product, checking namespace availability across multiple registries (domain, npm, GitHub, Docker Hub) is tedious and repetitive. `nmchk` is a Go CLI tool that checks all of them in parallel with a single command.
+When building a new product, checking namespace availability across multiple registries (domain, npm, GitHub, Docker Hub) is tedious and repetitive. `ns-check` is a Go CLI tool that checks all of them in parallel with a single command.
 
 ## Usage
 
 ```
-nmchk myproject                       # check all registries
-nmchk --only npm,github myproject     # check specific registries
-nmchk --skip domain myproject         # skip specific registries
-nmchk --timeout 5s myproject          # custom timeout
-nmchk --no-color myproject            # disable colors
+ns-check myproject                       # check all registries
+ns-check --only npm,github myproject     # check specific registries
+ns-check --skip domain myproject         # skip specific registries
+ns-check --timeout 5s myproject          # custom timeout
+ns-check --no-color myproject            # disable colors
 ```
 
 ## Project Structure
 
 ```
-nmchk/
+ns-check/
 ├── go.mod
 ├── main.go                  # Entry point: flag parsing, orchestration, exit codes
 ├── checker/
@@ -75,7 +75,7 @@ type Checker interface {
 | Docker Hub | `GET` | `https://hub.docker.com/v2/users/<name>` | 404 | 200 |
 
 - GitHub: reads `GITHUB_TOKEN` env var for authenticated requests (5000 req/hr vs 60 unauthenticated)
-- All HTTP checkers: `User-Agent: nmchk/1.0` header
+- All HTTP checkers: `User-Agent: ns-check/1.0` header
 - Each checker struct accepts a base URL override for testability with `httptest.NewServer`
 
 ### Concurrency (`runner/runner.go`)
@@ -194,9 +194,9 @@ Each step writes the test(s) first, then implements the production code to make 
   - Some taken → exit 1
   - Error case → exit 2
 - **Test real network calls** (behind `//go:build e2e` build tag, opt-in):
-  - `nmchk react` → exit 1 (name widely taken)
-  - `nmchk --only npm xyzzy-nmchk-unlikely-name-12345` → exit 0 (likely available)
-  - `nmchk --timeout 1ms some-name` → exit 2 (timeout triggers errors)
+  - `ns-check react` → exit 1 (name widely taken)
+  - `ns-check --only npm xyzzy-ns-check-unlikely-name-12345` → exit 0 (likely available)
+  - `ns-check --timeout 1ms some-name` → exit 2 (timeout triggers errors)
 
 ## Testing Summary
 
@@ -218,12 +218,12 @@ Run including e2e: `go test -tags e2e ./...`
 
 ```bash
 go test ./...                          # all unit tests pass
-go build -o nmchk .                     # builds successfully
-./nmchk react                           # exit 1, most registries taken
-./nmchk xyzzy-nmchk-unlikely-12345       # exit 0, most registries available
-./nmchk --only npm,github myproject     # filtered registries
-./nmchk --skip domain myproject         # skip domain check
-./nmchk --version                       # prints version
-./nmchk                                 # exit 2, usage message
+go build -o ns-check .                     # builds successfully
+./ns-check react                           # exit 1, most registries taken
+./ns-check xyzzy-ns-check-unlikely-12345       # exit 0, most registries available
+./ns-check --only npm,github myproject     # filtered registries
+./ns-check --skip domain myproject         # skip domain check
+./ns-check --version                       # prints version
+./ns-check                                 # exit 2, usage message
 echo $?                                # verify exit codes
 ```

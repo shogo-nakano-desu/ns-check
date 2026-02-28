@@ -63,7 +63,7 @@ func (c *HomebrewChecker) checkEndpoint(ctx context.Context, path string) (bool,
 	if err != nil {
 		return false, err
 	}
-	req.Header.Set("User-Agent", "nmchk/1.0")
+	req.Header.Set("User-Agent", "ns-check/1.0")
 
 	resp, err := c.client.Do(req)
 	if err != nil {

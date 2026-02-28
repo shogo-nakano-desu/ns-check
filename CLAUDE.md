@@ -1,11 +1,11 @@
 # CLAUDE.md
 
-nmchk is a Go CLI tool that checks namespace availability across package registries, domain names, and platforms in parallel.
+ns-check is a Go CLI tool that checks namespace availability across package registries, domain names, and platforms in parallel.
 
 ## Quick Reference
 
 - **Language:** Go 1.25+ (stdlib only, zero external dependencies)
-- **Build:** `go build -o nmchk .`
+- **Build:** `go build -o ns-check .`
 - **Test (unit):** `go test ./...`
 - **Test (e2e):** `go test -tags e2e ./...`
 - **Lint:** `golangci-lint run ./...`

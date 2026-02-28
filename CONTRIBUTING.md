@@ -1,15 +1,15 @@
-# Contributing to nmchk
+# Contributing to ns-check
 
-Thanks for wanting to help! nmchk is a small, focused tool and contributions of all sizes are welcome — from typo fixes to new registry checkers.
+Thanks for wanting to help! ns-check is a small, focused tool and contributions of all sizes are welcome — from typo fixes to new registry checkers.
 
 ## Development setup
 
 **Requirements:** Go 1.25+
 
 ```sh
-git clone https://github.com/shogonakano/nmchk.git
-cd nmchk
-go build -o nmchk .
+git clone https://github.com/shogonakano/ns-check.git
+cd ns-check
+go build -o ns-check .
 ```
 
 ## Running tests
@@ -80,7 +80,7 @@ func (c *MyRegistryChecker) Check(ctx context.Context, name string) Result {
     if err != nil {
         return Result{Registry: c.DisplayName(), Name: name, Status: StatusUnknown, Err: err}
     }
-    req.Header.Set("User-Agent", "nmchk/1.0")
+    req.Header.Set("User-Agent", "ns-check/1.0")
 
     resp, err := c.client.Do(req)
     if err != nil {
@@ -143,8 +143,8 @@ checker.NewMyRegistryChecker(httpClient),
 
 ```sh
 go test ./...
-go build -o nmchk .
-./nmchk testname
+go build -o ns-check .
+./ns-check testname
 ```
 
 ## Design principles
@@ -194,7 +194,7 @@ Keep the subject line under 72 characters. Use the body for "why", not "what".
 2. **Tests required.** All new code needs tests. All tests must pass.
 3. **Run `go vet ./...`** before submitting.
 4. **Conventional commits.** Follow the commit message format described above.
-5. **Keep the interface small.** nmchk is intentionally simple. If a feature needs a flag, think twice.
+5. **Keep the interface small.** ns-check is intentionally simple. If a feature needs a flag, think twice.
 
 ## Reporting bugs
 
@@ -210,4 +210,4 @@ Open an issue with:
 - New registry checkers (PyPI, RubyGems, Maven, etc.)
 - Better error messages for common failure modes
 - Shell completions (bash, zsh, fish)
-- Homebrew formula for installing nmchk itself
+- Homebrew formula for installing ns-check itself

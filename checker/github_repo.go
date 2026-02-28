@@ -31,7 +31,7 @@ func (c *GitHubRepoChecker) Check(ctx context.Context, name string) Result {
 		return Result{Registry: c.DisplayName(), Name: name, Status: Unknown, Err: err}
 	}
 	req.Header.Set("Accept", "application/vnd.github+json")
-	req.Header.Set("User-Agent", "nmchk/1.0")
+	req.Header.Set("User-Agent", "ns-check/1.0")
 	if c.token != "" {
 		req.Header.Set("Authorization", "Bearer "+c.token)
 	}

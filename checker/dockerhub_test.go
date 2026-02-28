@@ -97,7 +97,7 @@ func TestDockerHubChecker_UserAgent(t *testing.T) {
 	c := NewDockerHubChecker(srv.Client(), srv.URL)
 	c.Check(context.Background(), "test")
 
-	if receivedUA != "nmchk/1.0" {
-		t.Errorf("expected User-Agent 'nmchk/1.0', got %q", receivedUA)
+	if receivedUA != "ns-check/1.0" {
+		t.Errorf("expected User-Agent 'ns-check/1.0', got %q", receivedUA)
 	}
 }
